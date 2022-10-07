@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favourite dishes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="2391.png_860.ico">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>    
+
+    
+</head>
+<body>
+    <header>
+        <div id="mealLogo"><img src="logo-small.png"> 
+        </div>
+        <div id="links">
+            <span id="l">
+                <a class="links-a" href="index.html">Home</a>
+                <a class="links-a" href="contact.html">Contact</a>
+                <a class="links-a" href="favourites.html">Favourites</a>
+            </span>  
+            <!-- <span id="s">
+                <input type="text" id="search" placeholder="search here">
+                <button id="search-button">search</button>
+            </span>   -->
+        </div>   
+    </header>    
+    <!-- <div class="container">
+        <div id="meal"></div>
+
+    </div> -->
+    <h1 style="text-align:center">Your favourites</h1>
+    <div id="favourite">
+
+    </div>
+    
+
+<script>
+    let favouriteList           = JSON.parse(localStorage.getItem('favourite'))             //getting the item in localstorage with key value favourite
+    let favour                  = document.getElementById("favourite");                     //setting the variable as favour for id favourite
+    let removefav               = document.querySelectorAll(".rfav")                        //setting the variable as removefav for class .rfav
+    let f                       = Array.from(favouriteList)                                 //converting favouriteList set to f array 
+
+    window.onload               = (like(favouriteList))                                     //loadidng the list of favourite items on loading the window 
+    
+    document.addEventListener("click",(e)=>
+    {
+
+        if(e.target.classList == "r-fav" || e.target.classList == "trash")                  //if we press the trash can icon 
+        {  
+                let r = e.target.parentElement.parentElement.id;                            //tehn we can remove the item from favourite list
+       
+                let i= f.indexOf(r);                
+                
+                if(f.includes(f[i]))
+                {
+                    f.splice(i,1)                 
+                }
+                window.onload = (like(f))
+        }
+    })
+    
+    
+
+
+    function like(array)
+    {
+        let area="";
+        for(let i = 0;i<array.length;i++)
+        {
+
+            fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${array[i]}`)       //fetching the url and appending the searchtext and loading the results 
+            .then(res=>res.json())                                                          //converting it to json()
+            .then(data=>{                                                                   //mapping the data with each of the element present in the meals array
+
+                area +=`
+                    <div class="meal_id" id=${data.meals[0].idMeal}>    
+                        <img class="meal_image" src="${data.meals[0].strMealThumb}" >
+                            
+                        <div class="mealname">
+                            <h2>${data.meals[0].strMeal}</h2>
+                        </div>
+                        <div class="mealDetails" id=${data.meals[0].idMeal}>
+                            <button class="r-fav" ><img class="trash" src="trash-can-solid.svg"></button>      
+                            <a class="rec" href="meal.html" target="_blank"><button class="recipe-btn">cook</button></a>
+
+                        </div>
+                    </div>
+                    `
+                favour.innerHTML = area;
+
+            })
+        }
+    }
+    
+    </script>
+</body>
+</html>

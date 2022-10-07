@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal</title>
+    <link rel="icon" type="image/x-icon" href="2391.png_860.ico">
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <header>
+        <div id="mealLogo"><img src="logo-small.png"> 
+        </div>
+        <div id="links">
+            <span id="l">
+                <a class="links-a" href="index.html">Home</a>
+                <a class="links-a" href="contact.html">Contact</a>
+                <a class="links-a" href="favourites.html">Favourites</a>
+            </span>  
+            <!-- <span id="s">
+                <input type="text" id="search" placeholder="search here">
+                <button id="search-button">search</button>
+            </span>         -->
+        </div>   
+    </header>  
+    <div class="meal_details">
+        <div id="mealInstructions">
+
+        </div>
+
+    </div>
+    <footer>
+
+    </footer>
+
+
+
+<script>
+
+let meal_details        = document.querySelector('.meal_details')                   //assigning meal_details to class meal_details
+let mealInstructions    = document.getElementById('mealInstructions')               //assigning meal_Instructions to Id mealInstructions
+
+
+
+//opening a new page on clicking the button
+
+let a                   = localStorage.getItem('id')
+
+window.addEventListener('load',loading(a))
+
+function loading(a)                                                                 //creating a function that renders the data from api
+{
+    fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${a}`)              //fetching the url and appending the searchtext and loading the results 
+    .then(res=>res.json())                                                          //converting it to json()
+    .then(data=>{                                                                   //mapping the data with each of the element present in the meals array
+        console.log(data)
+        meal_details.innerHTML = 
+                `
+                    <div class="image">
+                        <img class="mealimage" src="${data.meals[0].strMealThumb}">
+                    </div>
+                    <div>
+                        <h2 class="meal_name">${data.meals[0].strMeal}</h2>
+                        <p class="meal_category"> ${data.meals[0].strCategory}</p>
+                    </div>
+
+                <div class="instruct">                    
+                    <h3>Instructions</h3>
+                    <p>${data.meals[0].strInstructions}</p>    
+                </div>
+
+                <div class="meal_link">
+                    <h4>Watch and cook</h4>
+                    <a href="${data.meals[0].strYoutube}" target="_blank"><img rel="icon" class="meal_link_icon" type="image/x-icon" src="youtube.svg"></a>
+                </div>
+            `
+    })
+}
+
+</script>
+<script rel="text/javascript" href="index.js"></script>
+</body>
+</html>

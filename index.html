@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="2391.png_860.ico">
+
+</head>
+<body>
+  <header>
+    <div id="mealLogo"><img src="logo-small.png"> 
+    </div>
+    <div id="links">
+        <span id="l">
+            <a class="links-a" href="index.html">Home</a>
+            <a class="links-a" href="contact.html">Contact</a>
+            <a class="links-a" href="favourites.html" target="_blank">Favourites</a>
+        </span>  
+        <span id="s">
+            <input type="text" id="search" placeholder="search here" >
+            <button id="search-button">search</button>
+        </span>  
+    </div>   
+</header>    
+
+<div class="container">
+    <div id="meal">
+
+    </div>
+
+</div>
+<script>
+var s                   = document.getElementById("search")     
+let meall               = document.querySelector('#meal');                          //fetching the meal id
+let searchbutton        = document.getElementById('search-button');                 //fetching the meal_details id
+let meal_details        = document.getElementsByClassName('meal_details');
+
+window.addEventListener('load',fetchresult)                                         //on loading the window, load the fetchresult
+s.addEventListener('keydown',SearchResult)
+searchbutton.addEventListener('click', fetchresult)
+function fetchresult()
+{
+    meall.innerHTML     = " ";
+    searchtext          = document.getElementById('search').value.trim();           //fetching the search value
+    
+    fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${searchtext}`)     //fetching the url and appending the searchtext and loading the results 
+    .then(response=>response.json())                                                //converting it to json()
+    .then((data)=>{                                                                 //mapping the data with each of the element present in the meals array
+
+        console.log(data)
+        
+        if(data.meals)                                                              //if searchtext value is present in data.meals, fill the template with values from api
+        {
+            data.meals.forEach(meal=>{
+                let area =`
+                <div class="meal_id" id=${meal.idMeal}>
+                    
+                    <img class="meal_image" src="${meal.strMealThumb}" >
+                    
+                    <div class="mealname">
+                        <h2>${meal.strMeal}</h2>
+                    </div>
+                    <div class="mealDetails" id=${meal.idMeal} >
+                        <img class="fav" id=${meal.idMeal} name=${meal.strMeal} src="heart-regular.svg" onclick="this.src='red-heart-icon.svg'" >
+                        
+                        <a class="rec"target="_blank" href="meal.html" ><button class="recipe-btn">cook</button></a>
+                        
+                    </div>
+                </div>
+                `
+                
+                meall.innerHTML += area;
+            })
+        }
+        else{
+            meall.innerHTML=`<div id="sorry"><p>Sorry, we didn't cook ${searchtext}</p></div> `     //else printing sorry on the page
+            console.log(`Sorry, we didn't cook ${searchtext}`)
+        }   
+    })
+}
+
+
+//Searching and filtering the results on given input
+
+function SearchResult()
+{                                                                                   //Filtering page items based the searchbar input
+    let a = []
+    meall.innerHTML="";
+    fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${s.value}`)        //fetching the url and appending the searchtext and loading the results 
+    .then(res=>res.json())                                                          //converting it to json()
+    .then(data=>{                                                                   //mapping the data with each of the element present in the meals array
+    for(let i=0;i<data.meals.length;i++)                                            //iterating to each of the searchbar input character and seaerching for the page results.
+    {
+      a[i] = data.meals[i]                                                          //addign those values to array and filtering the final result
+      console.log(a[i])
+      let area =`
+                <div class="meal_id" id=${a[i].idMeal}>
+                    
+                    <img class="meal_image" src="${a[i].strMealThumb}" >
+                    
+                    <div class="mealname">
+                        <h2>${a[i].strMeal}</h2>
+                    </div>
+                    <div class="mealDetails">
+                   
+                    
+                    <img class="fav" id=${a[i].idMeal} name=${meal.strMeal} src="heart-regular.svg" onclick="this.src='red-heart-icon.svg'" >
+                        
+                    <a class="rec" href="meal.html" target="blank"><button class="recipe-btn" target="blank">cook</button></a>
+                    </div>
+                </div>
+                `
+                meall.innerHTML += area;
+        }           
+    })
+}
+
+
+
+// detailing
+
+document.addEventListener("click",(e)=>     
+{   console.log(e.target.classList)
+    if(e.target.classList == "recipe-btn" || e.target.classList == "rec"  )         //if the clicked element is recipe button 
+    {
+        let x = e.target.parentElement.parentElement.id
+        console.log(x)                                                              //saving the id to localstorage and getting the id in the meals page 
+        localStorage.setItem('id', x);
+    }
+})
+
+
+
+// favourite list
+let favourite = []
+const favouriteList = new Set();
+localStorage.setItem('favourite',  JSON.stringify(favourite));                      //saving the favourite list to localstorage and getting the id in the meals page 
+document.addEventListener("click",(e)=>
+{                                           
+    if(e.target.classList == "fav" )                                                //if the target element's classlist is fav
+    {  
+        favouriteList.add(e.target.id);                                             //adding the item to favouriteList set and
+        favourite= Array.from(favouriteList)                                        //and filling this values to favourite array
+        localStorage.setItem('favourite',  JSON.stringify(favourite));              //sending the data to localstorage
+        alert(`${e.target.name} added to your favourites`)      
+    }
+        // console.log(favourite)
+})
+
+
+</script>
+</body>
+</html>
