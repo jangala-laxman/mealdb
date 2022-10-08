@@ -62,7 +62,7 @@
         }
     })
     
-    
+    favouriteList = Array.from(f)
 
 
     function like(array)
@@ -84,7 +84,7 @@
                         </div>
                         <div class="mealDetails" id=${data.meals[0].idMeal}>
                             <button class="r-fav" ><img class="trash" src="trash-can-solid.svg"></button>      
-                            <a class="rec" href="meal.html" target="_blank"><button class="recipe-btn">cook</button></a>
+                            <a class="rec" target="_blank" href="meal.html" id=${meal.idMeal} >Cook</a>
 
                         </div>
                     </div>
@@ -97,4 +97,18 @@
     
     </script>
 </body>
-</html>
+<!-- </html>
+let favourite = []
+const favouriteList = new Set();
+localStorage.setItem('favourite',  JSON.stringify(favourite));                      //saving the favourite list to localstorage and getting the id in the meals page 
+document.addEventListener("click",(e)=>
+{                                           
+    if(e.target.classList == "fav" )                                                //if the target element's classlist is fav
+    {  
+        favouriteList.add(e.target.id);                                             //adding the item to favouriteList set and
+        favourite= Array.from(favouriteList)                                        //and filling this values to favourite array
+        localStorage.setItem('favourite',  JSON.stringify(favourite));              //sending the data to localstorage
+        alert(`${e.target.name} added to your favourites`)      
+    }
+        // console.log(favourite)
+}) -->
